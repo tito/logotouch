@@ -13,6 +13,7 @@ Plusieurs interactions sont possibles en fonction du nombre de doigts sur le mot
 
 * On peut déplacer le mot avec un doigt.
 * Si le mot est secoué, il est remplacé par un synonyme. (Regarder -> Explorer -> S'attarder)
+* Si l'on touche 2x le mot rapidement, on affiche ou nom le pronom / sujet
 
 2 doigts
 ~~~~~~~~
