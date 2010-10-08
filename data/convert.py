@@ -9,6 +9,10 @@ c = csv.reader(open(sys.argv[1]), delimiter=',')
 #-----------------------------------------------------
 # fields & relation
 #-----------------------------------------------------
+ignore_list = ('', 'variantes', )
+replace_list = {
+    'nom': 'infinitif'
+}
 fields_map = {
     'futur je': 'futur_je',
     'futur il': 'futur_il',
@@ -76,7 +80,11 @@ for row in c:
             values[idx] = {'is_root':'0', 'is_verb': '1'}
             if idx == 1:
                 values[idx]['is_root'] = '1'
-        field = fields_map[row[0].lower()]
+        r0 = row[0].lower()
+        if r0 in ignore_list:
+            continue
+        r0 = replace_list.get(r0, r0)
+        field = fields_map[r0]
         values[idx][field] = row[idx]
 
 '''
@@ -92,6 +100,10 @@ pprint(values)
 
 # values
 for idx, item in values.items():
+    if not 'present_je' in item:
+        item['is_verb'] = 0
+        for x in fields_map.itervalues():
+            item.setdefault(x, '')
     sql_fields = ','.join(map(lambda x: '`%s`' % x, fields_map.values()))
     sql_values = ','.join(map(lambda x: '"%s"' % item[x], fields_map.values()))
     print 'INSERT IGNORE INTO lt_mot (%s) VALUES (%s);' % (sql_fields, sql_values)
