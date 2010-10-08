@@ -23,12 +23,38 @@ ltword {
 	font-size: 20;
 
 	/* when selected */
-	border-color-selected: rgb(154, 196, 98);
-	bg-color-selected: rgb(204, 246, 148);
+	-border-color-selected: rgb(154, 196, 98);
+	-bg-color-selected: rgb(204, 246, 148);
 
 	/* if antonym */
 	antonym-color: rgb(255, 255, 255);
-	antonym-bg-color: rgb(154, 196, 98);
-	antonym-bg-color-selected: rgb(204, 246, 148);
+	-antonym-bg-color: rgb(154, 196, 98);
+	-antonym-bg-color-selected: rgb(204, 246, 148);
 }
 
+ltword.verbe {
+	color: #990066;
+	border-color: #990066;
+	bg-color-selected: #fcdcf2;
+
+	antonym-bg-color: #990066;
+	antonym-bg-color-selected: #fcb9e7;
+}
+
+ltword.mot {
+	color: #0099cc;
+	border-color: #0099cc;
+	bg-color-selected: #d3f4ff;
+
+	antonym-bg-color: #0099cc;
+	antonym-bg-color-selected: #84e0ff;
+}
+
+ltword.adverbe {
+	color: #ff9933;
+	border-color: #ff9933;
+	bg-color-selected: #ffe9d3;
+
+	antonym-bg-color: #ff9933;
+	antonym-bg-color-selected: #ffd8b1;
+}

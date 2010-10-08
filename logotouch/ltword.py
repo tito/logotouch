@@ -6,10 +6,12 @@ import pymunk as pm
 
 class LTWord(MTWidget):
     def __init__(self, **kwargs):
+        self.provider = CSVWordProvider(kwargs.get('filename'))
+        kwargs.setdefault('cls', self.provider.wtype)
+
         super(LTWord, self).__init__(**kwargs)
         self._word = ''
         self._vertex = []
-        self.provider = CSVWordProvider(kwargs.get('filename'))
         self.padding_x = kwargs.get('padding_x', 50)
         self.padding_y = kwargs.get('padding_y', 30)
         self.textopt = {
@@ -78,7 +80,7 @@ class LTWord(MTWidget):
         h = self.height
         x = self.x - w / 2.
         y = self.y - h / 2.
-        d = self.direction
+        d = -self.direction
         self.vertex = [x, y+d, x+w, y-d, x+w, y+h+d, x, y+h-d]
 
     def _get_vertex(self):
@@ -132,6 +134,11 @@ class LTWord(MTWidget):
             self.apply_action(action, touch)
 
     def detect_action_1(self, touch):
+        # double tap ?
+        if self.is_action_allowed('toggleperson'):
+            if touch.is_double_tap:
+                return 'toggleperson'
+
         # only one action possible.. move :=)
         if self.is_action_allowed('shake'):
             distance = Vector(touch.userdata['origin']).distance(touch.pos)
@@ -214,6 +221,10 @@ class LTWord(MTWidget):
 
         else:
             self.cancel_action_shake()
+
+        if action == 'toggleperson':
+            print 'toggle person'
+            self.provider.toggle_person()
 
         # bigger / smaller word
         if action == 'scale':
@@ -306,6 +317,7 @@ class LTWord(MTWidget):
         touch.userdata['time'] = time()
         if self.touch is None:
             self.touch = touch
+            self.detect_action(touch)
         return True
 
     def on_touch_move(self, touch):
