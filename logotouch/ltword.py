@@ -31,10 +31,10 @@ class LTWord(MTWidget):
         self.shake_direction = 0
 
         # configure trigger
-        self.action_scale_trigger = kwargs.get('scale_trigger', 25)
+        self.action_scale_trigger = kwargs.get('scale_trigger', 30)
         self.action_scale_padding = kwargs.get('scale_padding', 10)
-        self.action_scale_fontsize = kwargs.get('scale_padding', 1)
-        self.action_rotation_trigger = kwargs.get('rotation_trigger', 30)
+        self.action_scale_fontsize = kwargs.get('scale_fontsize', 1)
+        self.action_rotation_trigger = kwargs.get('rotation_trigger', 45)
         self.action_time_trigger = kwargs.get('time_trigger', 25)
         self.action_person_trigger = kwargs.get('person_trigger', 25)
         self.action_shake_trigger = kwargs.get('shake_trigger', 15)
@@ -205,6 +205,7 @@ class LTWord(MTWidget):
     #
 
     def apply_action(self, action, touch):
+        pymt_logger.debug('apply action %s' % action)
         # just move the word
         if action == 'move':
             self.lpos = map(int, Vector(touch.pos) - touch.userdata['delta'])
@@ -212,7 +213,7 @@ class LTWord(MTWidget):
 
         # do synonym
         elif action == 'shake':
-            print 'do shake'
+            pymt_logger.debug('do shake')
             self.cancel_action_scale()
             self.cancel_action_antonym()
             self.provider.do_synonym()
@@ -223,7 +224,7 @@ class LTWord(MTWidget):
             self.cancel_action_shake()
 
         if action == 'toggleperson':
-            print 'toggle person'
+            pymt_logger.debug('toggle person')
             self.provider.toggle_person()
 
         # bigger / smaller word
@@ -233,26 +234,27 @@ class LTWord(MTWidget):
                 if self.provider.do_zoomout():
                     self.padding += self.action_scale_padding
                     self.textopt['font_size'] += self.action_scale_fontsize
-                    print 'do scale +', self.padding
+                    pymt_logger.debug('do scale + %d' % self.padding)
             else:
                 if self.provider.do_zoomin():
                     self.padding -= self.action_scale_padding
                     self.textopt['font_size'] -= self.action_scale_fontsize
-                    print 'do scale -', self.padding
+                    pymt_logger.debug('do scale - %d' % self.padding)
 
         # rotation do the antonym
         elif action == 'rotate':
-            self.action_exclusive = 'rotate'
-            self.provider.do_antonym()
-            s = self.style.get
-            color = s('color')
-            if self.provider.antonym:
-                color = s('antonym-color')
-            self.textopt['color'] = color
+            if self.action_exclusive != 'rotate':
+                self.action_exclusive = 'rotate'
+                self.provider.do_antonym()
+                s = self.style.get
+                color = s('color')
+                if self.provider.antonym:
+                    color = s('antonym-color')
+                self.textopt['color'] = color
 
         # prev/next time
         elif action == 'time':
-            print 'do time', touch.userdata['time']
+            pymt_logger.debug('do time %d' % touch.userdata['time'])
             self.action_exclusive = 'time'
             if touch.userdata['time'] > 0:
                 self.provider.do_time_next()
@@ -262,7 +264,7 @@ class LTWord(MTWidget):
 
         # prev/next pronoun
         elif action == 'person':
-            print 'do person'
+            pymt_logger.debug('do person')
             self.action_exclusive = 'person'
             if touch.userdata['person'] < 0:
                 self.provider.do_person_next()
@@ -286,7 +288,7 @@ class LTWord(MTWidget):
         self.shake_direction = 0
 
     def reset_action(self):
-        print 'reset'
+        pymt_logger.debug('reset')
         # reset origin of all touches.
         for touch in self.touches:
             touch.userdata['origin'] = touch.pos
