@@ -20,7 +20,7 @@ ltword {
 
 	/* font used by the word */
 	font-name: 'VagRounded.ttf';
-	font-size: 20;
+	font-size: 40;
 
 	/* when selected */
 	-border-color-selected: rgb(154, 196, 98);
