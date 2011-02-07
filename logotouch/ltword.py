@@ -171,13 +171,16 @@ class LTWord(MTWidget):
         # no scale, detect a rotation
         if self.is_action_allowed('rotate'):
             angle = Vector(0, 1).angle(Vector(touch1.pos) - Vector(touch2.pos))
+            pymt_logger.debug('calculated angle is %f' % angle)
             if self.angle is None:
                 self.angle = angle
             else:
+                pymt_logger.debug('current angle is %f' % self.angle)
                 angle = abs(angle - self.angle) % 360
                 if angle > 180:
                     angle = 360 - angle
                 # trigger
+                pymt_logger.debug('result angle is %f' % angle)
                 if angle > self.action_rotation_trigger:
                     return 'rotate'
 
@@ -224,8 +227,10 @@ class LTWord(MTWidget):
             self.cancel_action_shake()
 
         if action == 'toggleperson':
-            pymt_logger.debug('toggle person')
-            self.provider.toggle_person()
+            if not self.action_exclusive == 'toggleperson':
+                self.action_exclusive = 'toggleperson'
+                pymt_logger.debug('toggle person')
+                self.provider.toggle_person()
 
         # bigger / smaller word
         if action == 'scale':
