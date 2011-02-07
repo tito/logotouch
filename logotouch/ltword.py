@@ -296,6 +296,7 @@ class LTWord(MTWidget):
 
     def reset_detection(self):
         # reset exclusive action
+        self.reset_action()
         self.action_exclusive = None
         self.cancel_action_shake()
 
