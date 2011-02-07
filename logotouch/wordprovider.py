@@ -12,7 +12,7 @@ class AbstractWordProvider(object):
         self.tense = 1 # 0=past, 1=present, 2=future
         self.show_person = True
         self.person = 1
-        self.pronouns = [u'Je', u'Tu', u'Il', u'Nous', u'Vous', u'Ils']
+        self.pronouns = [u'', u'Je', u'Tu', u'Il', u'Nous', u'Vous', u'Ils']
         self.pronouns_word = [u'un', u'le', u'ce', u'une', u'la', u'cette',
                               u'des', u'les', u'ces', u'ma', u'sa', u'ta',
                               u'nos', u'notre', u'leurs', u'leur']
@@ -122,16 +122,23 @@ class CSVWordProvider(AbstractWordProvider):
         def norm(title):
             title = title.lower()
             c = title.split()
-            if len(c) != 2:
-                title = title.replace('nom', 'name')
-                title = title.replace('adverbe', 'name')
+            if len(c) == 0:
                 return title
-            a, b = c
-            a = a.replace('pr\xc3\xa9sent', 'present')
-            a = a.replace('futur', 'future')
-            a = a.replace('imparfait', 'past')
-            a = a.replace('imparfai', 'past')
-            d = {'je': 0, 'tu': 1, 'il': 2, 'nous': 3, 'vous': 4, 'ils': 5}
+            if len(c) != 2:
+                if c[0] != 'infinitif':
+                    title = title.replace('nom', 'name')
+                    title = title.replace('adverbe', 'name')
+                    return title
+            if c[0] == 'infinitif':
+                a = c[0]
+                b = ''
+            else:
+                a, b = c
+                a = a.replace('pr\xc3\xa9sent', 'present')
+                a = a.replace('futur', 'future')
+                a = a.replace('imparfait', 'past')
+                a = a.replace('imparfai', 'past')
+            d = {'': 0, 'je': 1, 'tu': 2, 'il': 3, 'nous': 4, 'vous': 5, 'ils': 6}
             return '%s_%s' % (a, d[b.lower()])
         rows = []
         titles = None
@@ -148,7 +155,6 @@ class CSVWordProvider(AbstractWordProvider):
 
         self.titles = titles
         for row in rows:
-            print self.filename, row[0]
             self.data[norm(row[0])] = row[1:]
 
         # count zoomin
@@ -186,7 +192,13 @@ class CSVWordProvider(AbstractWordProvider):
         # tense ?
         if self.wtype == 'verbe':
             a = {0: 'past', 1: 'present', 2: 'future'}
-            tense = '%s_%d' % (a[self.tense], self.person)
+            if self.tense != 1: # other than present
+                self.person = max(1, self.person)
+                tense = '%s_%d' % (a[self.tense], self.person)
+            elif self.person > 0:
+                tense = 'present_%d' % self.person
+            else:
+                tense = 'infinitif_0'
         else:
             tense = 'name'
 

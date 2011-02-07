@@ -304,6 +304,10 @@ class LTWord(MTWidget):
         self.reset_action()
         self.action_exclusive = None
         self.cancel_action_shake()
+        self.cancel_action_scale()
+        self.cancel_action_antonym()
+        self.shake_counter = 0
+        self.shake_direction = 0
 
 
     #
