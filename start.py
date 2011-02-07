@@ -14,5 +14,6 @@ else:
 
 for filename in files:
     world.create_word(filename=filename)
+    break
 
 runTouchApp(world)

@@ -347,13 +347,18 @@ class LTWord(MTWidget):
         self.update_pymunk_shape()
 
     def on_move(self, x, y):
+        w, h = getWindow().size
         if x - self.width / 2. < 0:
-            self._x = x - self.width / 2.
-            self.update_pymunk_position()
+            self.pos = (self.width / 2., self._pos[1])
             return
         if y - self.height / 2. < 0:
-            self._y = y - self.height / 2.
-            self.update_pymunk_position()
+            self.pos = (self._pos[0], self.height / 2.)
+            return
+        if x + self.width / 2. > w:
+            self.pos = (w - self.width / 2., self._pos[1])
+            return
+        if y + self.height / 2. > h:
+            self.pos = (self._pos[0], h - self.height / 2.)
             return
         super(LTWord, self).on_move(x, y)
         self.update_vertex()
