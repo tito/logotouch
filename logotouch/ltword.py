@@ -293,7 +293,7 @@ class LTWord(MTWidget):
         self.shake_direction = 0
 
     def reset_action(self):
-        pymt_logger.debug('reset')
+        #pymt_logger.debug('reset')
         # reset origin of all touches.
         for touch in self.touches:
             touch.userdata['origin'] = touch.pos

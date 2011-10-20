@@ -8,7 +8,10 @@ class LTWorld(MTWidget):
         super(LTWorld, self).__init__(**kwargs)
         self.size = getWindow().size
 
-        pm.init_pymunk()
+        try:
+            pm.init_pymunk()
+        except:
+            pass
         self.space = pm.Space()
         self.space.gravity = (0., 0.)
         #self.space.resize_static_hash()
@@ -24,4 +27,11 @@ class LTWorld(MTWidget):
         self.add_widget(word)
 
     def update_world(self, dt):
+        if len(getCurrentTouches()) == 0:
+            for child in self.children:
+                if not isinstance(child, LTWord):
+                    continue
+                child.touch = None
+                child.touches = []
+                child.reset_detection()
         self.space.step(1. / 60)
